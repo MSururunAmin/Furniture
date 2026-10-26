@@ -25,7 +25,12 @@ export default function AdminLogin() {
       localStorage.setItem("auth_user", JSON.stringify(user));
       navigate(location.state?.from?.pathname || "/admin", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || "Email atau password salah.");
+      const status = err.response?.status;
+      setError(
+        status >= 500
+          ? "Server sedang bermasalah. Periksa koneksi database backend."
+          : err.response?.data?.message || "Email atau password salah.",
+      );
     } finally {
       setLoading(false);
     }
@@ -38,7 +43,9 @@ export default function AdminLogin() {
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-600">
             Premium Furniture
           </p>
-          <h1 className="mt-3 text-3xl font-bold text-slate-900">Admin Panel</h1>
+          <h1 className="mt-3 text-3xl font-bold text-slate-900">
+            Admin Panel
+          </h1>
           <p className="mt-2 text-slate-500">Masuk untuk mengelola website.</p>
         </div>
 
@@ -49,25 +56,35 @@ export default function AdminLogin() {
               type="email"
               required
               value={form.email}
-              onChange={(event) => setForm({ ...form, email: event.target.value })}
+              onChange={(event) =>
+                setForm({ ...form, email: event.target.value })
+              }
               className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
               placeholder="admin@example.com"
             />
           </label>
 
           <label className="block">
-            <span className="text-sm font-semibold text-slate-700">Password</span>
+            <span className="text-sm font-semibold text-slate-700">
+              Password
+            </span>
             <input
               type="password"
               required
               value={form.password}
-              onChange={(event) => setForm({ ...form, password: event.target.value })}
+              onChange={(event) =>
+                setForm({ ...form, password: event.target.value })
+              }
               className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
               placeholder="Masukkan password"
             />
           </label>
 
-          {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</p>}
+          {error && (
+            <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"

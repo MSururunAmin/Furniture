@@ -57,7 +57,7 @@ export default function Home() {
                 HERO
             ========================================================= */}
       <section className="bg-slate-950 text-white">
-        <div className="mx-auto grid min-h-[calc(100vh-88px)] max-w-7xl items-center gap-24 px-6 py-16 lg:grid-cols-2 lg:px-8 lg:py-10">
+        <div className="mx-auto grid min-h-screen max-w-7xl items-center gap-24 px-6 pb-16 pt-32 lg:grid-cols-2 lg:px-8 lg:pb-10 lg:pt-32">
           {/* Hero Text */}
           <div className="max-w-2xl">
             <p className="text-sm font-bold uppercase tracking-[0.35em] text-amber-400">

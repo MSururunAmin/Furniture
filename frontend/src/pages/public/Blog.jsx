@@ -24,6 +24,26 @@ const getExcerpt = (body) => {
   return body.length > 150 ? `${body.slice(0, 150).trim()}...` : body;
 };
 
+const ArticleImage = ({ imageUrl, title, featured = false }) => (
+  <div
+    className={`relative overflow-hidden bg-stone-200 ${
+      featured ? "aspect-16/10 sm:aspect-auto sm:min-h-[24rem]" : "aspect-16/10"
+    }`}
+  >
+    {imageUrl ? (
+      <img
+        src={imageUrl}
+        alt={title}
+        className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+      />
+    ) : (
+      <div className="flex h-full min-h-48 items-center justify-center text-sm text-slate-400">
+        Belum ada gambar
+      </div>
+    )}
+  </div>
+);
+
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,37 +69,65 @@ export default function Blog() {
     loadBlogs();
   }, []);
 
+  const featuredBlog = blogs[0];
+  const otherBlogs = blogs.slice(1);
+
   return (
-    <div className="bg-white">
-      <section className="bg-slate-950 px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-500">
-            Blog & Insight
-          </p>
-          <h1 className="mt-4 max-w-4xl text-5xl font-bold leading-tight text-white md:text-6xl">
-            Inspirasi untuk Ruang yang Lebih Berkarakter
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-            Temukan inspirasi desain, tips memilih furniture, dan cerita di
-            balik pengerjaan ruang yang kami hadirkan.
-          </p>
+    <div className="bg-stone-50">
+      <section className="px-6 pb-14 pt-32 sm:pb-20 sm:pt-36">
+        <div className="mx-auto grid max-w-7xl items-end gap-8 md:grid-cols-[1fr_340px] md:gap-16">
+          <div>
+            <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-amber-700">
+              <span className="h-px w-8 bg-amber-500" />
+              Jurnal Ruang
+            </p>
+            <h1 className="mt-6 max-w-4xl font-serif text-5xl font-medium leading-[1.08] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+              Cerita di balik ruang yang bermakna.
+            </h1>
+          </div>
+          <div className="border-l border-amber-300 pl-5 md:mb-2">
+            <p className="text-base leading-7 text-slate-600">
+              Inspirasi desain, panduan memilih furniture, dan ide untuk
+              menjadikan rumah terasa lebih personal.
+            </p>
+            <p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+              Ide baik untuk hidup sehari-hari
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="bg-slate-50 px-6 py-20">
+      <section className="border-t border-slate-200/80 px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-600">
-              Artikel Terbaru
-            </p>
-            <h2 className="mt-2 text-3xl font-bold text-slate-900 md:text-4xl">
-              Ide dan Pengetahuan Furniture
-            </h2>
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-700">
+                Baca dan temukan
+              </p>
+              <h2 className="mt-2 font-serif text-3xl text-slate-950 sm:text-4xl">
+                Catatan terbaru
+              </h2>
+            </div>
+            {!loading && !error && blogs.length > 0 && (
+              <p className="text-sm text-slate-500">
+                {blogs.length} artikel
+              </p>
+            )}
           </div>
 
           {loading && (
-            <div className="py-20 text-center text-slate-500">
-              Memuat artikel...
+            <div
+              role="status"
+              aria-label="Memuat artikel"
+              className="grid animate-pulse gap-6 md:grid-cols-2"
+            >
+              <span className="sr-only">Memuat artikel...</span>
+              <div className="aspect-16/10 rounded-3xl bg-slate-200 md:row-span-2 md:aspect-auto" />
+              <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-8">
+                <div className="h-4 w-28 rounded bg-slate-200" />
+                <div className="h-8 w-3/4 rounded bg-slate-200" />
+                <div className="h-20 rounded bg-slate-100" />
+              </div>
             </div>
           )}
 
@@ -90,57 +138,101 @@ export default function Blog() {
           )}
 
           {!loading && !error && blogs.length === 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white py-20 text-center">
-              <p className="text-lg font-medium text-slate-500">
+            <div className="rounded-3xl border border-slate-200 bg-white px-6 py-20 text-center">
+              <p className="font-serif text-2xl text-slate-800">
                 Belum ada artikel yang diterbitkan.
+              </p>
+              <p className="mt-3 text-sm text-slate-500">
+                Nantikan cerita dan inspirasi terbaru dari kami.
               </p>
             </div>
           )}
 
           {!loading && !error && blogs.length > 0 && (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {blogs.map((blog) => {
-                const imageUrl = getImageUrl(blog.cover_image);
-
-                return (
-                  <article
-                    key={blog.id}
-                    className="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-                  >
-                    <div className="aspect-16/10 overflow-hidden bg-slate-100">
-                      {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt={blog.title}
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center text-sm text-slate-400">
-                          Belum ada gambar
-                        </div>
+            <div className="space-y-8">
+              <article
+                key={featuredBlog.id}
+                className="group grid overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:shadow-xl hover:shadow-slate-900/5 md:grid-cols-2"
+              >
+                <Link
+                  to={`/blog/${featuredBlog.id}`}
+                  className="block overflow-hidden"
+                  aria-label={`Baca artikel: ${featuredBlog.title}`}
+                >
+                  <ArticleImage
+                    imageUrl={getImageUrl(featuredBlog.cover_image)}
+                    title={featuredBlog.title}
+                    featured
+                  />
+                </Link>
+                <div className="flex flex-col justify-center p-7 sm:p-10 lg:p-12">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold uppercase tracking-[0.14em] text-amber-700">
+                    <span className="rounded-full bg-amber-50 px-3 py-1.5">
+                      Pilihan editor
+                    </span>
+                    <time
+                      dateTime={
+                        featuredBlog.published_at || featuredBlog.created_at
+                      }
+                    >
+                      {formatDate(
+                        featuredBlog.published_at || featuredBlog.created_at,
                       )}
-                    </div>
+                    </time>
+                  </div>
+                  <h3 className="mt-5 font-serif text-3xl leading-tight text-slate-950 sm:text-4xl">
+                    {featuredBlog.title}
+                  </h3>
+                  <p className="mt-4 leading-7 text-slate-600">
+                    {getExcerpt(featuredBlog.body)}
+                  </p>
+                  <Link
+                    to={`/blog/${featuredBlog.id}`}
+                    className="mt-7 inline-flex w-fit items-center gap-3 border-b border-amber-500 pb-1.5 text-sm font-semibold text-slate-950 transition hover:gap-5 hover:text-amber-800"
+                  >
+                    Baca artikelnya <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </article>
 
-                    <div className="p-6">
-                      <p className="text-sm text-slate-400">
-                        {formatDate(blog.created_at)}
-                      </p>
-                      <h2 className="mt-3 text-2xl font-bold text-slate-900">
-                        {blog.title}
-                      </h2>
-                      <p className="mt-3 line-clamp-3 leading-7 text-slate-500">
-                        {getExcerpt(blog.body)}
-                      </p>
+              {otherBlogs.length > 0 && (
+                <div className="grid gap-x-8 gap-y-10 pt-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {otherBlogs.map((blog) => (
+                    <article key={blog.id} className="group">
                       <Link
                         to={`/blog/${blog.id}`}
-                        className="mt-6 inline-block font-semibold text-amber-600 transition hover:text-amber-700"
+                        className="block overflow-hidden rounded-2xl"
+                        aria-label={`Baca artikel: ${blog.title}`}
                       >
-                        Baca Selengkapnya →
+                        <ArticleImage
+                          imageUrl={getImageUrl(blog.cover_image)}
+                          title={blog.title}
+                        />
                       </Link>
-                    </div>
-                  </article>
-                );
-              })}
+                      <div className="pt-5">
+                        <time
+                          dateTime={blog.published_at || blog.created_at}
+                          className="text-xs font-medium uppercase tracking-[0.14em] text-slate-400"
+                        >
+                          {formatDate(blog.published_at || blog.created_at)}
+                        </time>
+                        <h3 className="mt-3 font-serif text-2xl leading-snug text-slate-950 transition group-hover:text-amber-800">
+                          {blog.title}
+                        </h3>
+                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
+                          {getExcerpt(blog.body)}
+                        </p>
+                        <Link
+                          to={`/blog/${blog.id}`}
+                          className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition group-hover:gap-3 group-hover:text-amber-800"
+                        >
+                          Baca artikel <span aria-hidden="true">→</span>
+                        </Link>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

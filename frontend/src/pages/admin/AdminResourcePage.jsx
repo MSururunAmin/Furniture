@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getCategories } from "../../services/categoryService";
 import {
   createFurniture,
@@ -133,6 +134,8 @@ export default function AdminResourcePage({ resourceKey }) {
   const resource = resources[resourceKey];
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categoriesError, setCategoriesError] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [formError, setFormError] = useState("");
@@ -164,9 +167,19 @@ export default function AdminResourcePage({ resourceKey }) {
     loadItems();
 
     if (resourceKey === "furniture") {
+      setCategoriesLoading(true);
+      setCategoriesError("");
       getCategories()
         .then((response) => setCategories(response.data || []))
-        .catch(() => setCategories([]));
+        .catch((err) => {
+          setCategories([]);
+          setCategoriesError(
+            !err.response
+              ? "API tidak dapat dihubungi. Pastikan Laravel aktif dan VITE_API_URL di frontend/.env benar."
+              : err.response.data?.message || "Kategori gagal dimuat.",
+          );
+        })
+        .finally(() => setCategoriesLoading(false));
     }
   }, [resourceKey]);
 
@@ -297,6 +310,7 @@ export default function AdminResourcePage({ resourceKey }) {
             <select
               className={inputClass}
               required
+              disabled={categoriesLoading || categories.length === 0}
               value={form.category_id}
               onChange={(e) => updateField("category_id", e.target.value)}
             >
@@ -307,6 +321,22 @@ export default function AdminResourcePage({ resourceKey }) {
                 </option>
               ))}
             </select>
+            {categoriesError ? (
+              <span className="mt-2 block text-sm text-red-600">
+                {categoriesError}
+              </span>
+            ) : !categoriesLoading && categories.length === 0 ? (
+              <span className="mt-2 block text-sm text-amber-700">
+                Belum ada kategori.{" "}
+                <Link
+                  className="font-semibold underline"
+                  to="/admin/categories"
+                >
+                  Tambah kategori
+                </Link>{" "}
+                terlebih dahulu.
+              </span>
+            ) : null}
           </Field>
           <Field label="Material">
             <input

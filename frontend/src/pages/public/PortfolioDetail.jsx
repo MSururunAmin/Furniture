@@ -83,7 +83,7 @@ export default function PortfolioDetail() {
   return (
     <div className="bg-white">
       {/* ================= HEADER ================= */}
-      <section className="bg-slate-950 px-6 py-16">
+      <section className="bg-slate-950 px-6 pb-16 pt-32">
         <div className="mx-auto max-w-7xl">
           <Link
             to="/portfolio"

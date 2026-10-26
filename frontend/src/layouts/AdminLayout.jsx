@@ -5,6 +5,7 @@ import { logout } from "../services/authService";
 const navItems = [
   { to: "/admin", label: "Dashboard", end: true },
   { to: "/admin/furniture", label: "Furniture" },
+  { to: "/admin/categories", label: "Kategori" },
   { to: "/admin/portfolio", label: "Portfolio" },
   { to: "/admin/blog", label: "Blog" },
   { to: "/admin/contacts", label: "Pesan Masuk" },

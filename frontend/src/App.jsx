@@ -14,6 +14,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminResourcePage from "./pages/admin/AdminResourcePage";
+import AdminCategories from "./pages/admin/AdminCategories";
 import RequireAuth from "./components/RequireAuth";
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
           }
         >
           <Route index element={<AdminDashboard />} />
+          <Route path="categories" element={<AdminCategories />} />
           <Route
             path="furniture"
             element={<AdminResourcePage resourceKey="furniture" />}
@@ -52,7 +54,10 @@ function App() {
             path="portfolio"
             element={<AdminResourcePage resourceKey="portfolio" />}
           />
-          <Route path="blog" element={<AdminResourcePage resourceKey="blog" />} />
+          <Route
+            path="blog"
+            element={<AdminResourcePage resourceKey="blog" />}
+          />
           <Route
             path="contacts"
             element={<AdminResourcePage resourceKey="contacts" />}
